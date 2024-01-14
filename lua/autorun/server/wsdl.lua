@@ -1,4 +1,9 @@
 if !game.SinglePlayer() then
+
+	local green = Color(0, 255, 0, 255)
+	local orange = Color(255, 125, 0, 255)
+	local white = Color(255, 255, 255, 255)
+
 	local resource_extension_types = {
 		--Models (handled by addon.models)
 	
