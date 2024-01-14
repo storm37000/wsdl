@@ -7,6 +7,7 @@ if !game.SinglePlayer() then
 		"mp3",
 		"ogg",
 		"aac",
+		"m4a",
 	
 		--Materials, Textures
 		"vmt",
@@ -25,7 +26,7 @@ if !game.SinglePlayer() then
 	}
 
 	local function msg(str,...)
-		MsgN("[WSDL] ",string.format(str,...))
+		MsgC(orange, "[WSDL] ⮞ ", white, string.format(str,...) .. "\n")
 	end
 
 	local function traverse(subPath,basePath,found_exts)
