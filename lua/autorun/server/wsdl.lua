@@ -54,20 +54,25 @@ if !game.SinglePlayer() then
 	end
 
 	local dt = SysTime()
+	local steamisdown = false
 
 	local addons = engine.GetAddons()
 	for k,_ in ipairs( addons ) do
-		addons[k].timeadded=nil
+		addons[k].timeadded = nil
 	end
+
+	if addons[math.random(1,#addons)].title == "Cached Addon" then steamisdown = true end
+
 	local csum = util.SHA256(table.ToString(resource_extension_types) .. table.ToString(addons))
-	msg("Addon list checksum is %s",csum)
+	
+	if not steamisdown then msg("Addon list checksum is %s",csum) end
 
 	local download_count = 0
 	local filecache
 	if file.Exists("wsdl_cache.txt", "DATA") then
 		filecache = util.JSONToTable(file.Read("wsdl_cache.txt","DATA"))
 		if filecache == nil then filecache = {} end
-		if filecache.csum and filecache.csum == csum then
+		if (steamisdown and filecache.sendaddons) or (filecache.csum and filecache.csum == csum and filecache.sendaddons) then
 			download_count = #filecache.sendaddons
 			for _,id in ipairs(filecache.sendaddons) do
 				resource.AddWorkshop(id)
@@ -84,6 +89,8 @@ if !game.SinglePlayer() then
 		filecache.csum = csum
 		filecache.sendaddons = {}
 	end
+
+	if steamisdown then return end
 
 	msg("Scanning %i addons...",#addons)
 
@@ -113,6 +120,7 @@ if !game.SinglePlayer() then
 			resource.AddWorkshop(addon.wsid)
 			download_count=download_count+1
 			table.insert(filecache.sendaddons, addon.wsid)
+			msg("Added %s (%s) to download list",addon.title,addon.wsid)
 		end
 	end
 
